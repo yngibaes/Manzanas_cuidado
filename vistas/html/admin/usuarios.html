@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col justify-center items-center mt-20">
+        <div class="bg-purple-100 p-6 rounded-lg shadow-md mx-auto mt-8 mb-4">
+            <button type="button" id="logout" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium">Cerrar sesión</button>
+            <h2 class="text-3xl font-semibold text-purple-700 mt-6 mb-4">Admin: <span id="nusuario" class="font-bold"></span></h2> 
+            <div class="flex">
+                <a href="/servicios"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400 mr-1">Servicios</button></a>
+                <a href="./manzanas"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400 mr-1">Manzanas</button></a>
+                <a href="./usuarios"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400">Usuarios</button></a>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-center">
+        <div class="flex flex-col justify-center items-center mt-4">
+            <div>
+                <button id="usu" onclick="document.getElementById('tab_usu').style.display = 'block';" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-700 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-500">Mostrar Usuarios</button>
+            </div>
+            <div class="flex items-center justify-center">
+                <div class="overflow-x-auto">
+                    <div id="tab_usu" class="relative hidden w-full overflow-auto my-5 rounded-lg z-0">
+                        <table class="w-full text-xl text-left rtl:text-right text-black border-solid border-2 border-[#6f42c1] caption-bottom">
+                            <thead class="[&amp;_tr]:border-b">
+                                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">ID</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Nombre</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Tipo de documento</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Documento</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Manzana</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Ajustes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usu_tab" class="[&amp;_tr:last-child]:border-0">
+                            </tbody>
+                        </table>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded',()=>{
+        const xhrUser = new XMLHttpRequest();
+        xhrUser.open('POST', '/obtener-usuario', true);
+        xhrUser.onreadystatechange=function(){
+            if(xhrUser.readyState===4){
+                if(xhrUser.status===200){
+                    const user = JSON.parse(xhrUser.responseText)
+                    document.getElementById('nusuario').textContent=user.nombre_usu;
+                }else{
+                    console.log("Error, no envía el usuario")
+                }
+            }
+        };
+        xhrUser.send() //Esta es la función la cual nos ayuda a llamar el nombre del usuario, sin necesidad que pase por la url.
+
+        const logout = document.getElementById('logout')
+        logout.addEventListener('click', ()=>{
+            const xhrLogout = new XMLHttpRequest()
+            xhrLogout.open('POST', '/logout', true);
+            xhrLogout.onreadystatechange=function(){
+                if(xhrLogout.readyState===4 && xhrLogout.status===200){
+                    window.location.href=("http://127.0.0.1:5501/vistas/html/index.html")
+                }else{
+                    console.log("Error al cerrar sesión.")
+                }
+            }
+            xhrLogout.send()
+        })
+        window.onload=function(){
+            window.history.forward()
+        }
+        window.onpageshow=function(open){
+            if(open.persisted){
+                window.location.reload(false)
+            }
+        }
+        
+        const usu = document.getElementById('usu') //Boton
+        const usu_tab = document.getElementById('usu_tab') //Tabla
+
+        //Usuarios
+        usu.addEventListener('click',()=>{
+            const xhr=new XMLHttpRequest();
+            xhr.open('POST', '/usuarios', true); //Ruta del index de node.
+            xhr.setRequestHeader('Content-type','application/json');
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState === 4){
+                    if(xhr.status === 200){
+                        const data=JSON.parse(xhr.responseText);
+                        usu_tab.innerHTML=data.usuarios.map(usuData=>` 
+                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-solid border-2 border-[#6f42c1]">
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 font-bold">
+                                ${usuData[0]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    ${usuData[1]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    ${usuData[2]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    ${usuData[3]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    ${usuData[4]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    <button data-id="${usuData[3]}" id="usu_eliminar" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-red-600 text-white mr-2 hover:bg-red-500 mb-2">Eliminar</button>
+                                    <details class="dropdown">
+                                        <summary data-id="${usuData[0]}" class="btn inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white">Editar</summary>
+                                        <div class="border text-card-foreground w-full max-w-md p-3 bg-white shadow-xl rounded-lg mt-2" data-v0-t="card"> 
+                                            <div class="relative bg-white rounded-lg">
+                                                <div class="flex flex-col space-y-1 p-1">
+                                                    <h3 class="whitespace-nowrap tracking-tight text-2xl font-bold text-purple-800 mb-3">Actualiza usuario</h3>
+                                                </div>
+                                                <form class="space-y-6 w-[300px]" action="http://localhost:3005/actua-usuario" method="post">
+                                                    <div>
+                                                        <label for="id_usuario" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">ID del usuario</label>
+                                                        <input type="text" id="id_usuario" name="id_usuario" readonly class="flex pl-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ring-purple-500" value="${usuData[0]}"/>
+                                                    </div>
+                                                    <div>
+                                                        <label for="nombre_usu" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">Nombre</label>
+                                                        <input type="text" id="nombre_usu" name="nombre_usu" readonly class="flex pl-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ring-purple-500" value="${usuData[1]}"/>
+                                                    </div>
+                                                    <div>
+                                                        <label for="tipo_doc" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">Tipo de documento</label>
+                                                        <select id="tipo_doc" name="tipo_doc" required class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-1 py-2 text-base ring-purple-500 ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-gray-500">
+                                                            <option class="text-base text-gray-500" select>Seleccione</option>
+                                                            <option class="text-base text-gray-900" value="TI">Tarjeta de Identidad</option>
+                                                            <option class="text-base text-gray-900" value="CC">Cédula Ciudadana</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label for="doc" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">Documento</label>
+                                                        <input type="text" id="doc" name="doc" readonly class="flex pl-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ring-purple-500" value="${usuData[3]}">
+                                                    </div>
+                                                    <div>
+                                                        <label for="fk_manzanas" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">Elige una manzana</label>
+                                                        <h2 class="text-xs font-semibold">El usuario se encuentra en la <span class="font-bold">${usuData[4]}</span></h2>
+                                                        <select id="fk_manzanas" name="fk_manzanas" required class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-1 py-2 text-base ring-purple-500 ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-gray-500">
+                                                            <option class="text-base text-gray-500" select>Seleccione</option>
+                                                            <option class="text-base text-gray-900" value="1">Manzanas rojas</option>
+                                                            <option class="text-base text-gray-900" value="2">Manzanas doradas</option>
+                                                            <option class="text-base text-gray-900" value="3">Manzanas rosadas</option>
+                                                            <option class="text-base text-gray-900" value="4">Manzanas moradas</option>
+                                                            <option class="text-base text-gray-900" value="5">Manzanas naranjas</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <button type="submit" id="button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80 h-10 px-4 py-2 w-full bg-purple-800 text-white mr-2 hover:bg-purple-600">Enviar</button>
+                                                        <button type="reset" id="button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80 h-10 px-4 py-2 w-full bg-purple-800 text-white mr-2 hover:bg-purple-600">Borrar</button>
+                                                    </div>  
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </details>
+                                </td>
+                            </tr>
+                        `).join(''); //Aquí se mapeo la información que salió del json para que se muestre al usuario.
+
+                        const usu_eliminar = usu_tab.querySelectorAll('#usu_eliminar');
+                        usu_eliminar.forEach(button => {
+                            button.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                //Se llama el data-id el cual nos ayuda a extraer datos para js.
+                                const doc = button.dataset.id;
+                                console.log(doc)
+                                const xhr = new XMLHttpRequest();
+                                xhr.open('DELETE', '/eliminar-usuario',true);
+                                xhr.setRequestHeader('Content-type','application/json');
+                                xhr.onreadystatechange=function(){
+                                    if(xhr.readyState === 4){
+                                        if(xhr.status === 200){
+                                            alert("Usuario borrado")
+                                            window.location.reload(false);
+                                        }else{
+                                            alert("El usuario tiene solicitudes pendientes")
+                                            window.location.reload(false);
+                                        }
+                                    }else{
+                                        console.log("Error al borrar el usuario.")
+                                    }
+                                }
+                                xhr.send(JSON.stringify({doc})) //Arreglo clave valor.
+                            })
+                        })
+                    }else{
+                    console.error('Error al obtener información de los usuarios.')
+                    }
+                }
+            };
+            xhr.send() //Aquí envía los datos.
+        })
+     })
+</script> 
+</html>

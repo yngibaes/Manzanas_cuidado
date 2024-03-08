@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="../img/logo-simbolo-mc_.png">
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col justify-center items-center mt-20">
+        <div class="bg-purple-100 p-6 rounded-lg shadow-md max-w-sm mx-auto mt-8 mb-4">
+            <button type="button" id="logout" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium">Cerrar sesión</button>
+            <h2 class="text-3xl font-semibold text-purple-700 mt-6 mb-4">Bienvenido/da <span id="nusuario" class="font-bold"></span></h2> 
+            <button id="button_ser" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium mt-2 hover:bg-purple-400">Servicios disponibles</button>
+            <div id="container_ser" class="hidden">
+                <form id="form_ser">
+                    <ul id="lista_usu" class="list-inside mb-3"></ul>
+                        <div class="mt-2 ml-8">
+                            <label class="block mb-1 text-base font-medium text-gray-900 ml-3">Selecciona una fecha:</label>
+                            <input type="datetime-local" id="fechaHora" name="fechaHora" min="2024-01-01 00:00" required class="flex h-5 bg-background text-large ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 p-2 rounded-md w-52 ml-2 bg-transparent mb-5">
+                        </div>
+                    <div class="flex justify-center">
+                        <button type="submit" id="button" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-purple-400">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="flex items-center justify-start">
+            <button id="solici_regis" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium mt-2 hover:bg-purple-400">Solicitudes registradas</button>
+        </div>
+        <div id="solici" class="flex flex-wrap items-center justify-center mx-10">
+        </div>
+    </div>
+
+<script> 
+    document.addEventListener('DOMContentLoaded',()=>{
+        const xhrUser = new XMLHttpRequest();
+        xhrUser.open('POST', '/obtener-usuario', true);
+        xhrUser.onreadystatechange=function(){
+            if(xhrUser.readyState===4){
+                if(xhrUser.status===200){
+                    const user = JSON.parse(xhrUser.responseText)
+                    document.getElementById('nusuario').textContent=user.nombre_usu;
+                }else{
+                    console.log("Error, no envía el usuario")
+                }
+            }
+        };
+        xhrUser.send() //Esta es la función la cual nos ayuda a llamar el nombre del usuario, sin necesidad que pase por la url.
+
+        //Aquí llamo los id de todo lo que tiene que ver con los servicios.
+        const container_ser=document.getElementById('container_ser');
+        const form=document.getElementById('form_ser');
+        const button_ser=document.getElementById('button_ser');
+        const lista_usu=document.getElementById('lista_usu');
+ 
+            //Esto muestra los nombres de los servicios.
+        button_ser.addEventListener('click',()=>{
+            const xhr=new XMLHttpRequest();
+            xhr.open('POST', '/obtener-servicios-usuario', true); //Ruta del index de node.
+            xhr.setRequestHeader('Content-type','application/json');
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState === 4){
+                    if(xhr.status === 200){
+                        const data=JSON.parse(xhr.responseText);
+                        lista_usu.innerHTML=data.servicios.map(servicio=>`
+                            <div class="mt-1.5 ml-5">
+                                <label class="inline-flex items-center"><input type="radio" name="servicios" id="servicios" required class="form-radio text-purple-600"value="${servicio}"/><span class="ms-2 text-medium font-medium text-gray-900 dark:text-black px-1">${servicio}</span></label>
+                            </div>`).join(''); //Aquí se mapeo la información que salió del json para que se muestre al usuario.
+                            container_ser.style.display="block";
+                        }
+                        else{
+                            console.error('Error al obtener servicios de usuarios')
+                        }
+                    }
+                };
+                xhr.send() //Aquí la confirmación al server.
+        })
+
+            //Aquí es el envio de datos.
+        form.addEventListener('submit', async(event)=>{
+            event.preventDefault();
+            console.log(form.elements['servicios'])
+            const servicioSelect= Array
+            .from(form.elements['servicios'])
+            .filter(radio=>radio.checked)
+            .map(radio=>radio.value) //Toma el servicio seleccionado
+            const fechaHora = form.elements['fechaHora'].value;
+            const xhr=new XMLHttpRequest();
+            xhr.open('POST', '/guardar-servicios-usuario', true); //Ruta
+            xhr.setRequestHeader('Content-type','application/json');
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4){
+                    if(xhr.status === 200){
+                        alert("Datos guardados")
+                        window.location.reload(false);
+                    }
+                    else{
+                        console.error('Error al guardar servicios del usuario')
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({
+                servicios:servicioSelect,
+                fechaHora: fechaHora,
+            })) //Aquí envía los datos para guardar a la base de datos.
+        })
+
+        //Aquí llamo los ids de las solicitudes.
+        const solici_regis = document.getElementById('solici_regis');
+        const divSoli = document.getElementById('solici')
+
+        //Aquí se llaman las solicitudes.
+        solici_regis.addEventListener('click',()=>{
+            const xhr=new XMLHttpRequest();
+            xhr.open('POST','/obtener-solicitudes',true);
+            xhr.setRequestHeader('Content-type','application/json');
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState === 4){
+                    if(xhr.status === 200){
+                        const data=JSON.parse(xhr.responseText); //Transformar JSONea
+                        divSoli.innerHTML=data.solicitudes.map(soliData=>
+                            `<div class="bg-zinc-200 p-4 rounded-lg my-5 mr-4 shadow-md">
+                                <p class="text-2xl font-semibold">Solicitud información</p>
+                                <hr class="h-0.5 bg-black mb-2"></hr>
+                                <p class="text-xl mt-1">ID: ${soliData[0]}</p>
+                                <p class="text-xl mt-1">Servicio: ${soliData[1]}</p>
+                                <p class="text-xl mt-1">Tipo: ${soliData[2]}</p>
+                                <p class="text-xl mt-2">Fecha: ${new Date (soliData[3]).toLocaleString()}</p>
+                                <div id="div-button" class="flex justify-center items-center">
+                                    <button id="delete-button" data-id="${soliData[0]}" class="bg-red-500 p-2.5 text-gray-100 font-semibold rounded mt-4 mb-1">Eliminar solicitud</button>
+                                </div>
+                            </div>`).join('');
+                            container_ser.style.display="none"
+                                 
+                            //Se llama todos los botones de eliminar del div padre de ellos.
+                            const deletebutton = divSoli.querySelectorAll('#delete-button')
+                                
+                            //Función de eliminar
+                            //Por cada id que se encuentre va a hacer la función, esto es para que elimine cualquiera y no sólo el primero.
+                            deletebutton.forEach(button => {
+                                //Aquí ya se inicia el evento apartir del botón.
+                                button.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                //Se llama el data-id el cual nos ayuda a extraer datos para js.
+                                const id_solicitud = button.dataset.id;
+                                console.log(id_solicitud) //Confirmación del id.
+                                const xhr = new XMLHttpRequest();
+                                xhr.open('DELETE','/eliminar-solicitud',true);
+                                xhr.setRequestHeader('Content-type','application/json');
+                                xhr.onreadystatechange=function(){
+                                    if(xhr.readyState === 4){
+                                        if(xhr.status === 200){
+                                            console.log("Solicitud borrada")
+                                            window.location.reload(false);}
+                                    }else{
+                                        console.log("Error al borrar la solicitud.")
+                                    }
+                                }
+                                xhr.send(JSON.stringify({id_solicitud})) //Arreglo clave valor.
+                                });
+                            })
+                    }
+                    else{
+                        console.error('Error al obtener solicitudes')
+                    }
+                }
+            };
+            xhr.send()
+        })
+
+        const logout = document.getElementById('logout')
+        logout.addEventListener('click', ()=>{
+            const xhrLogout = new XMLHttpRequest()
+            xhrLogout.open('POST', '/logout', true);
+            xhrLogout.onreadystatechange=function(){
+                if(xhrLogout.readyState===4 && xhrLogout.status===200){
+                    window.location.href=("http://127.0.0.1:5501/vistas/html/index.html")
+                }else{
+                    console.log("Error al cerrar sesión.")
+                }
+            }
+            xhrLogout.send()
+        })
+        window.onload=function(){
+            window.history.forward()
+        }
+        window.onpageshow=function(open){
+            if(open.persisted){
+                window.location.reload(false)
+            }
+        }
+    })
+    </script>
+</body>
+</html>

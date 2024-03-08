@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="../img/logo-simbolo-mc_.png">
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col justify-center items-center mt-20">
+        <div class="bg-purple-100 p-6 rounded-lg shadow-md mx-auto mt-8 mb-4">
+            <button type="button" id="logout" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium">Cerrar sesión</button>
+            <h2 class="text-3xl font-semibold text-purple-700 mt-6 mb-4">Admin: <span id="nusuario" class="font-bold"></span></h2> 
+            <div class="flex">
+                <a href="/servicios"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400 mr-1">Servicios</button></a>
+                <a href="./manzanas"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400 mr-1">Manzanas</button></a>
+                <a href="./usuarios"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400">Usuarios</button></a>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded',()=>{
+        const xhrUser = new XMLHttpRequest();
+        xhrUser.open('POST', '/obtener-usuario', true);
+        xhrUser.onreadystatechange=function(){
+            if(xhrUser.readyState===4){
+                if(xhrUser.status===200){
+                    const user = JSON.parse(xhrUser.responseText)
+                    document.getElementById('nusuario').textContent=user.nombre_usu;
+                }else{
+                    console.log("Error, no envía el usuario")
+                }
+            }
+        };
+        xhrUser.send() //Esta es la función la cual nos ayuda a llamar el nombre del usuario, sin necesidad que pase por la url.
+
+        const logout = document.getElementById('logout')
+        logout.addEventListener('click', ()=>{
+            const xhrLogout = new XMLHttpRequest()
+            xhrLogout.open('POST', '/logout', true);
+            xhrLogout.onreadystatechange=function(){
+                if(xhrLogout.readyState===4 && xhrLogout.status===200){
+                    window.location.href=("http://127.0.0.1:5501/vistas/html/index.html")
+                }else{
+                    console.log("Error al cerrar sesión.")
+                }
+            }
+            xhrLogout.send()
+        })
+        window.onload=function(){
+            window.history.forward()
+        }
+        window.onpageshow=function(open){
+            if(open.persisted){
+                window.location.reload(false)
+            }
+        }
+     })
+</script> 
+</html>

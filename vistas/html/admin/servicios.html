@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col justify-center items-center mt-20">
+        <div class="bg-purple-100 p-6 rounded-lg shadow-md mx-auto mt-8 mb-4">
+            <button type="button" id="logout" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium">Cerrar sesión</button>
+            <h2 class="text-3xl font-semibold text-purple-700 mt-6 mb-4">Admin: <span id="nusuario" class="font-bold"></span></h2> 
+            <div class="flex">
+                <a href="/servicios"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400 mr-1">Servicios</button></a>
+                <a href="./manzanas"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400 mr-1">Manzanas</button></a>
+                <a href="./usuarios"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400">Usuarios</button></a>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-center">
+        <div class="flex flex-col justify-center items-center mt-4">
+            <div>
+                <button onclick="document.getElementById('form_serv').style.display = 'block'; document.getElementById('tab_servi').style.display = 'none';" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-700 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-500">Crear servicio</button>
+                <button id="servi" onclick="document.getElementById('form_serv').style.display = 'none'; document.getElementById('tab_servi').style.display = 'block';" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-700 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-500">Mostrar servicios</button>
+            </div>
+            <div class="flex items-center justify-center">
+                <div id="form_serv" class="flex hidden justify-center items-center mt-5 border text-card-foreground w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
+                    <div class="flex flex-col space-y-1 p-1">
+                        <h3 class="whitespace-nowrap tracking-tight text-2xl font-bold text-purple-800 mb-3">Crea un nuevo servicio</h3>
+                    </div>
+                    <form class="space-y-6 w-[250px]" action="http://localhost:3005/crear-servicio" method="post">
+                        <div>
+                            <label for="nombre_ser" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">Nombre del servicio</label>
+                            <input type="text" id="nombre_ser" name="nombre_ser" required class="flex pl-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ring-purple-500" placeholder="Escribe el nombre del servicio"/>
+                        </div>
+                        <div>
+                            <label for="tipo" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">Tipo</label>
+                            <input type="text" name="tipo" id="tipo" required class="flex pl-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ring-purple-500" placeholder="Escribe el tipo de servicio">
+                        </div>
+                        <div class="flex justify-between">
+                            <button type="submit" id="button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80 h-10 px-4 py-2 w-full bg-purple-800 text-white mr-2 hover:bg-purple-600" onclick="()=>{alert('Servicio guardardo');}">Enviar</button>
+
+                            <button type="reset" id="button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80 h-10 px-4 py-2 w-full bg-purple-800 text-white mr-2 hover:bg-purple-600">Borrar</button>
+                        </div>  
+                    </form>
+                </div>
+                <div class="overflow-x-auto">
+                    <div id="tab_servi" class="relative hidden w-full overflow-auto my-5 rounded-lg z-0">
+                        <table class="w-full text-xl text-left rtl:text-right text-black border-solid border-2 border-[#6f42c1] caption-bottom">
+                            <thead class="[&amp;_tr]:border-b">
+                                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">ID</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Servicio</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Tipo</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Ajustes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="servi_tab" class="[&amp;_tr:last-child]:border-0">
+                            </tbody>
+                        </table>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded',()=>{
+        const xhrUser = new XMLHttpRequest();
+        xhrUser.open('POST', '/obtener-admin', true);
+        xhrUser.onreadystatechange=function(){
+            if(xhrUser.readyState===4){
+                if(xhrUser.status===200){
+                    const user = JSON.parse(xhrUser.responseText)
+                    document.getElementById('nusuario').textContent=user.nombre_usu;
+                }else{
+                    console.log("Error, no envía el usuario")
+                }
+            }
+        };
+        xhrUser.send()
+
+
+        const logout = document.getElementById('logout')
+        logout.addEventListener('click', ()=>{
+            const xhrLogout = new XMLHttpRequest()
+            xhrLogout.open('POST', '/logout', true);
+            xhrLogout.onreadystatechange=function(){
+                if(xhrLogout.readyState===4 && xhrLogout.status===200){
+                    window.location.href=("http://127.0.0.1:5501/vistas/html/index.html")
+                }else{
+                    console.log("Error al cerrar sesión.")
+                }
+            }
+            xhrLogout.send()
+        })
+        window.onload=function(){
+            window.history.forward()
+        }
+        window.onpageshow=function(open){
+            if(open.persisted){
+                window.location.reload(false)
+            }
+        }
+
+        const servi = document.getElementById('servi') //Boton
+        const servi_tab = document.getElementById('servi_tab') //Tabla
+
+        //Servicios
+        servi.addEventListener('click',()=>{
+            const xhr=new XMLHttpRequest();
+            xhr.open('POST', '/servicios', true); //Ruta del index de node.
+            xhr.setRequestHeader('Content-type','application/json');
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState === 4){
+                    if(xhr.status === 200){
+                        const data=JSON.parse(xhr.responseText);
+                        servi_tab.innerHTML=data.servicios.map(serData=>` 
+                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-solid border-2 border-[#6f42c1]">
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 font-bold">
+                                ${serData[0]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    ${serData[1]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    ${serData[2]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    <button data-id="${serData[0]}" id="servi_eliminar" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-red-600 text-white mr-2 hover:bg-red-500 mb-2">Eliminar</button>
+                                    <details class="dropdown">
+                                        <summary data-id="${serData[0]}" class="btn inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white">Editar</summary>
+                                        <div class="border text-card-foreground w-full max-w-md p-3 bg-white shadow-xl rounded-lg mt-2" data-v0-t="card"> 
+                                            <div class="relative bg-white rounded-lg">
+                                                <div class="flex flex-col space-y-1 p-1">
+                                                    <h3 class="whitespace-nowrap tracking-tight text-2xl font-bold text-purple-800 mb-3">Actualiza servicio</h3>
+                                                </div>
+                                                <form class="space-y-6 w-[300px]" action="http://localhost:3005/actua-servicio" method="post">
+                                                    <div>
+                                                        <label for="id_servicios" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">ID del servicio</label>
+                                                        <input type="text" id="id_servicios" name="id_servicios" readonly class="flex pl-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ring-purple-500" value="${serData[0]}"/>
+                                                    </div>
+                                                    <div>
+                                                        <label for="nombre_ser" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">Nombre del servicio</label>
+                                                        <input type="text" id="nombre_ser" name="nombre_ser" required class="flex pl-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ring-purple-500" value="${serData[1]}"/>
+                                                    </div>
+                                                    <div>
+                                                        <label for="tipo" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">Tipo</label>
+                                                        <input type="text" name="tipo" id="tipo" required class="flex pl-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ring-purple-500" value="${serData[2]}">
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <button type="submit" id="button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80 h-10 px-4 py-2 w-full bg-purple-800 text-white mr-2 hover:bg-purple-600">Enviar</button>
+                                                        <button type="reset" id="button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80 h-10 px-4 py-2 w-full bg-purple-800 text-white mr-2 hover:bg-purple-600">Borrar</button>
+                                                    </div>  
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </details>
+                                </td>
+                            </tr>
+                        `).join(''); //Aquí se mapeo la información que salió del json para que se muestre al usuario.
+
+                        const servi_eliminar = servi_tab.querySelectorAll('#servi_eliminar');
+                        servi_eliminar.forEach(button => {
+                            button.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                //Se llama el data-id el cual nos ayuda a extraer datos para js.
+                                const id_servicios = button.dataset.id;
+                                console.log(id_servicios)
+                                const xhr = new XMLHttpRequest();
+                                xhr.open('DELETE', '/eliminar-servicios',true);
+                                xhr.setRequestHeader('Content-type','application/json');
+                                xhr.onreadystatechange=function(){
+                                    if(xhr.readyState === 4){
+                                        if(xhr.status === 200){
+                                            alert("Servicio borrado")
+                                            window.location.reload(false);
+                                        }else{
+                                            alert("El servicio no se puede eliminar")
+                                            window.location.reload(false);
+                                        }
+                                    }else{
+                                        console.log("Error al borrar el servicio.")
+                                    }
+                                }
+                                xhr.send(JSON.stringify({id_servicios})) //Arreglo clave valor.
+                            })
+                        })
+                    }else{
+                    console.error('Error al obtener información de los servicios.')
+                    }
+                }
+            };
+            xhr.send() //Aquí envía los datos.
+        })
+    })
+</script> 
+</html>
