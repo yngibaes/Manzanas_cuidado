@@ -268,11 +268,15 @@ app.get('/usuarios', async (req, res)=>{
     res.sendFile(path.join(__dirname, "../vistas/html/admin/usuarios.html"));
 })
 
+app.get('/manzaser', async (req, res)=>{
+    res.sendFile(path.join(__dirname, "../vistas/html/admin/manzanas_servicios.html"));
+})
+
 //Capturar los servicios.
 app.post('/servicios', async (req, res)=>{
     const db = await mysql2.createConnection(data) //Conexión
     try{
-        const [serData] = await db.execute('SELECT * from servicios'); //Consulta para eliminar
+        const [serData] = await db.execute('SELECT * from servicios'); //Consulta para buscar
         console.log(serData)
         res.json({ 
             servicios: serData.map(row =>([ 
@@ -320,7 +324,7 @@ app.delete('/eliminar-servicios', async(req, res) =>{
     const {id_servicios} = req.body //Captura el id de la solicitud
     const db = await mysql2.createConnection(data) //Conexión
     try{
-        await db.execute('DELETE FROM servicios WHERE id_servicios = ?', [id_servicios]); //Consulta para eliminar
+        await db.execute('DELETE FROM servicios WHERE id_servicios = ?', [id_servicios]); //Consulta para buscar
         console.log("Servicio eliminado") //Confirmación
         res.status(200).send('Servicio eliminado'); //Envía confirmación al html
     }catch (error) {
@@ -351,7 +355,7 @@ app.post('/actua-servicio', async (req, res)=>{
 app.post('/manzanas', async (req, res)=>{
     const db = await mysql2.createConnection(data) //Conexión
     try{
-        const [manData] = await db.execute('SELECT * from manzanas'); //Consulta para eliminar
+        const [manData] = await db.execute('SELECT * from manzanas'); //Consulta para buscar
         console.log(manData)
         res.json({ 
             manzanas: manData.map(row =>([ 
@@ -415,7 +419,7 @@ app.post('/actua-manzana', async (req, res)=>{
 app.post('/usuarios', async (req, res)=>{
     const db = await mysql2.createConnection(data) //Conexión
     try{
-        const [usuData] = await db.execute('SELECT usuario.id_usuario, usuario.nombre_usu, usuario.tipo_doc, usuario.doc, manzanas.nombre_man from usuario INNER JOIN manzanas ON usuario.fk_manzanas=manzanas.id_manzanas WHERE usuario.fk_manzanas=manzanas.id_manzanas AND usuario.rol="Usuario"'); //Consulta para eliminar
+        const [usuData] = await db.execute('SELECT usuario.id_usuario, usuario.nombre_usu, usuario.tipo_doc, usuario.doc, manzanas.nombre_man from usuario INNER JOIN manzanas ON usuario.fk_manzanas=manzanas.id_manzanas WHERE usuario.fk_manzanas=manzanas.id_manzanas AND usuario.rol="Usuario"'); //Consulta para buscar
         console.log(usuData)
         res.json({ 
             usuarios: usuData.map(row =>([ 
@@ -461,6 +465,72 @@ app.post('/actua-usuario', async (req, res)=>{
                 window.location.href="/usuarios"
                 </script>`)
     }catch (error) { 
+        //Capturamos el error.
+        console.error('Error en el servidor', error)
+        res.status(500).send('Reinicie el server sorra')
+    }
+})
+
+//Manzanas y servicios
+app.post('/manzanas_servicios', async (req, res)=>{
+    const db = await mysql2.createConnection(data) //Conexión
+    try{
+        const [sermanData] = await db.execute('SELECT manzanas.id_manzanas, manzanas.nombre_man, servicios.id_servicios, servicios.nombre_ser from manzanas INNER JOIN manzanas_servicios ON manzanas.id_manzanas=manzanas_servicios.fk_manzanas INNER JOIN servicios ON manzanas_servicios.fk_servicios=servicios.id_servicios WHERE manzanas.id_manzanas=manzanas_servicios.fk_manzanas AND manzanas_servicios.fk_servicios=servicios.id_servicios ORDER BY manzanas.id_manzanas ASC'); //Consulta para eliminar
+        console.log(sermanData)
+        res.json({ 
+            manzanas_servicios: sermanData.map(row =>([ 
+                //Aquí tomamos los datos capturados en un json y los mapeamos para que se convierta en un Array para poder enviarlos y mostrarlos en el html. 
+                // * [] => Array | {} => Objeto
+                row.id_manzanas,
+                row.nombre_man,
+                row.id_servicios,
+                row.nombre_ser
+            ]))
+        }) 
+    }catch (error) {
+        //Capturamos el error.
+        console.error('Error en el servidor', error)
+        res.status(500).send('Reinicie el server sorra')
+    }
+})
+
+//Crear conexión
+app.post('/crear-manser', async (req, res)=>{
+    const { id_manzanas, id_servicios} = req.body;
+    const db = await mysql2.createConnection(data)
+    try{
+        const [check] = await db.execute('SELECT * FROM manzanas_servicios WHERE manzanas_servicios.fk_manzanas = ? AND manzanas_servicios.fk_servicios = ?', [id_manzanas, id_servicios]);
+        if(check.length > 0){
+             // No existe una manzana con el nombre y la dirección especificados
+            res.status(401).send('<script> window.onload=function(){alert("Conexión ya existe"); window.location.href="/manzaser"}</script>');
+        }
+        else{
+             // Ya existe una manzana con el nombre y la dirección especificados
+             await db.execute('INSERT INTO manzanas_servicios (fk_manzanas, fk_servicios) VALUES (?,?)', [id_manzanas, id_servicios])
+             res.status(200).send(`<script> 
+                alert('Conexión guardarda');
+                window.location.href="/manzaser"
+                </script>`)
+        }
+    }catch (error) { 
+        //Capturamos el error.
+        console.error('Error en el servidor', error)
+        res.status(500).send('Reinicie el server sorra')
+    }
+})
+
+//Eliminar manzana y servicio
+app.delete('/eliminar-manser', async(req, res) =>{
+    const {ids} = req.body //Captura el id de la solicitud
+    const idss = ids.split(",") //Aquí separamos el string el cual separa los datos en "," y los convierte en un Array.
+    console.log(idss[0], idss[1])
+    const db = await mysql2.createConnection(data) //Conexión
+    try{
+
+        await db.execute('DELETE FROM manzanas_servicios WHERE fk_manzanas = ? AND fk_servicios=?', [idss[0], idss[1]]); //Consulta para eliminar
+        console.log("Manzana y servicio eliminados") //Confirmación
+        res.status(200).send('Manzana y servicio eliminados'); //Envía confirmación al html
+    }catch (error) {
         //Capturamos el error.
         console.error('Error en el servidor', error)
         res.status(500).send('Reinicie el server sorra')

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manzanas Servicios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col justify-center items-center mt-20">
+        <div class="bg-purple-100 p-6 rounded-lg shadow-md mx-auto mt-8 mb-4">
+            <button type="button" id="logout" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium">Cerrar sesión</button>
+            <h2 class="text-3xl font-semibold text-purple-700 mt-6 mb-4">Admin: <span id="nusuario" class="font-bold"></span></h2> 
+            <div class="flex">
+                <a href="/servicios"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400 mr-1">Servicios</button></a>
+                <a href="./manzanas"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400 mr-1">Manzanas</button></a>
+                <a href="./usuarios"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400 mr-1">Usuarios</button></a>
+                <a href="./manzaser"><button class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-500 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-400">ManSer</button></a>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-center">
+        <div class="flex flex-col justify-center items-center mt-4">
+            <div>
+                <button id="crearserman" onclick="document.getElementById('form_manser').style.display = 'block'; document.getElementById('serman_div').style.display= 'none'" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-700 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-500">Crear ManSer</button>
+                <button id="serman" onclick="document.getElementById('form_manser').style.display = 'none'; document.getElementById('serman_div').style.display= 'block'" class="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-purple-700 text-white px-6 py-2 rounded-md text-base font-medium hover:bg-purple-500">Mostrar ManSer</button>
+                
+            </div>
+            <div class="flex items-center justify-center">
+                <div id="form_manser" class="flex hidden justify-center items-center mt-5 border text-card-foreground w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
+                    <div class="flex flex-col space-y-1 p-1">
+                        <h3 class="whitespace-nowrap tracking-tight text-2xl font-bold text-purple-800 mb-3">Crea una conexión</h3>
+                    </div>
+                    <form class="space-y-6 w-[300px]" action="http://localhost:3005/crear-manser" method="post">
+                        <div>
+                            <label for="id_manzanas" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">Manzana</label>
+                            <select id="id_manzanas" name="id_manzanas" required class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-1 py-2 text-base ring-purple-500 ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-gray-500"></select>
+                        </div>
+                        <div>
+                            <label for="id_servicios" class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-base font-semibold text-purple-700 mb-1">Servicios</label>
+                            <select id="id_servicios" name="id_servicios" required class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-1 py-2 text-base ring-purple-500 ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-gray-500"></select>
+                        </div>
+                        <div class="flex justify-between">
+                            <button type="submit" id="button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80 h-10 px-4 py-2 w-full bg-purple-800 text-white mr-2 hover:bg-purple-600" onclick="()=>{alert('Conexión guardarda');}">Enviar</button>
+
+                            <button type="reset" id="button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80 h-10 px-4 py-2 w-full bg-purple-800 text-white mr-2 hover:bg-purple-600">Borrar</button>
+                        </div>  
+                    </form>
+                </div>
+                <div class="overflow-x-auto">
+                    <div id="serman_div" class="relative hidden w-full overflow-auto my-5 rounded-lg z-0">
+                        <table class="w-full text-xl text-left rtl:text-right text-black border-solid border-2 border-[#6f42c1] caption-bottom">
+                            <thead class="[&amp;_tr]:border-b">
+                                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">ID</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Manzana</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">ID</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Servicio</th>
+                                    <th class="h-12 px-4 text-left align-middle font-medium [&amp;:has([role=checkbox])]:pr-0 bg-[#6f42c1] text-gray-50">Ajustes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="serman_tab" class="[&amp;_tr:last-child]:border-0">
+                            </tbody>
+                        </table>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded',()=>{
+        const xhrUser = new XMLHttpRequest();
+        xhrUser.open('POST', '/obtener-usuario', true);
+        xhrUser.onreadystatechange=function(){
+            if(xhrUser.readyState===4){
+                if(xhrUser.status===200){
+                    const user = JSON.parse(xhrUser.responseText)
+                    document.getElementById('nusuario').textContent=user.nombre_usu;
+                }else{
+                    console.log("Error, no envía el usuario")
+                }
+            }
+        };
+        xhrUser.send() //Esta es la función la cual nos ayuda a llamar el nombre del usuario, sin necesidad que pase por la url.
+
+        const logout = document.getElementById('logout')
+        logout.addEventListener('click', ()=>{
+            const xhrLogout = new XMLHttpRequest()
+            xhrLogout.open('POST', '/logout', true);
+            xhrLogout.onreadystatechange=function(){
+                if(xhrLogout.readyState===4 && xhrLogout.status===200){
+                    window.location.href=("http://127.0.0.1:5501/vistas/html/index.html")
+                }else{
+                    console.log("Error al cerrar sesión.")
+                }
+            }
+            xhrLogout.send()
+        })
+        window.onload=function(){
+            window.history.forward()
+        }
+        window.onpageshow=function(open){
+            if(open.persisted){
+                window.location.reload(false)
+            }
+        }
+
+        const crearserman = document.getElementById('crearserman')
+        const id_manzanas = document.getElementById('id_manzanas')
+        const id_servicios = document.getElementById('id_servicios')
+
+        crearserman.addEventListener('click',()=>{
+            const xhr=new XMLHttpRequest();
+            xhr.open('POST', '/manzanas', true); //Ruta del index de node.
+            xhr.setRequestHeader('Content-type','application/json');
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState === 4){
+                    if(xhr.status === 200){
+                        const data=JSON.parse(xhr.responseText);
+                        id_manzanas.innerHTML=data.manzanas.map(manData=>` 
+                            <option class="text-base text-gray-900" value="${manData[0]}">${manData[1]}</option>
+                        
+                        `).join(''); //Aquí se mapeo la información que salió del json para que se muestre las manzanas y servicios.
+                    }else{
+                    console.error('Error al obtener información de las manzanas.')
+                    }
+                }
+            };
+            xhr.send() //Aquí envía los datos.
+        })
+
+        crearserman.addEventListener('click',()=>{
+            const xhr=new XMLHttpRequest();
+            xhr.open('POST', '/servicios', true); //Ruta del index de node.
+            xhr.setRequestHeader('Content-type','application/json');
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState === 4){
+                    if(xhr.status === 200){
+                        const data=JSON.parse(xhr.responseText);
+                        id_servicios.innerHTML=data.servicios.map(serData=>` 
+                            <option class="text-base text-gray-900" value="${serData[0]}">${serData[1]}</option>
+                        
+                        `).join(''); //Aquí se mapeo la información que salió del json para que se muestre las manzanas y servicios.
+                    }else{
+                    console.error('Error al obtener información de las manzanas.')
+                    }
+                }
+            };
+            xhr.send() //Aquí envía los datos.
+        })
+
+
+        const serman = document.getElementById('serman') //Boton
+        const serman_tab = document.getElementById('serman_tab') //Tabla
+
+        //Manzanas y servicios
+        serman.addEventListener('click',()=>{
+            const xhr=new XMLHttpRequest();
+            xhr.open('POST', '/manzanas_servicios', true); //Ruta del index de node.
+            xhr.setRequestHeader('Content-type','application/json');
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState === 4){
+                    if(xhr.status === 200){
+                        const data=JSON.parse(xhr.responseText);
+                        serman_tab.innerHTML=data.manzanas_servicios.map(sermanData=>` 
+                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-solid border-2 border-[#6f42c1]">
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 font-bold">
+                                    ${sermanData[0]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    ${sermanData[1]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 font-bold">
+                                    ${sermanData[2]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    ${sermanData[3]}
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                    <button data-id="${sermanData[0]}, ${sermanData[2]}" id="serman_eliminar" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-red-600 text-white mr-2 hover:bg-red-500 mb-2">Eliminar</button>
+                                </td>
+                            </tr>
+                        `).join(''); //Aquí se mapeo la información que salió del json para que se muestre las manzanas y servicios.
+
+                        const serman_eliminar = serman_tab.querySelectorAll('#serman_eliminar');
+                        serman_eliminar.forEach(button => {
+                            button.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                //Se llama el data-id el cual nos ayuda a extraer datos para js.
+                                const ids = button.dataset.id;
+                                console.log(ids)
+                                const xhr = new XMLHttpRequest();
+                                xhr.open('DELETE', '/eliminar-manser',true);
+                                xhr.setRequestHeader('Content-type','application/json');
+                                xhr.onreadystatechange=function(){
+                                    if(xhr.readyState === 4){
+                                        if(xhr.status === 200){
+                                            alert("Manzana y servicio borrados")
+                                            window.location.reload(false);
+                                        }else{
+                                            alert("Manzana y servicio no se pueden eliminar")
+                                            window.location.reload(false);
+                                        }
+                                    }else{
+                                        console.log("Error al borrar manzana y servicio.")
+                                    }
+                                }
+                                xhr.send(JSON.stringify({ids})) //Arreglo clave valor.
+                            })
+                        })
+
+                    }else{
+                    console.error('Error al obtener información de las manzanas.')
+                    }
+                }
+            };
+            xhr.send() //Aquí envía los datos.
+        })
+    })
+</script>
+
+
+</html>
